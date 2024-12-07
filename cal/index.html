@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shelf Life Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .calculator-container {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .calculator-container h1 {
+      text-align: center;
+      color: #0208a8;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .calculate-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #0208a8;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .calculate-btn:hover {
+      background-color: #01017E;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      background: #f1f8ff;
+      border-left: 4px solid #0208a8;
+      font-size: 16px;
+      color: #0208a8;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator-container">
+    <h1>Shelf Life Calculator</h1>
+
+    <div class="form-group">
+      <label for="startDate">Shelf Life Start Date:</label>
+      <input type="date" id="startDate">
+    </div>
+
+    <div class="form-group">
+      <label for="todayDate">Today's Date:</label>
+      <input type="date" id="todayDate">
+    </div>
+
+    <div class="form-group">
+      <label for="expiryDate">Expiry Date:</label>
+      <input type="date" id="expiryDate">
+    </div>
+
+    <button class="calculate-btn" onclick="calculateShelfLife()">Calculate</button>
+
+    <div id="result" class="result" style="display: none;"></div>
+  </div>
+
+  <script>
+    function calculateShelfLife() {
+      const startDate = new Date(document.getElementById("startDate").value);
+      const todayDate = new Date(document.getElementById("todayDate").value);
+      const expiryDate = new Date(document.getElementById("expiryDate").value);
+      const resultDiv = document.getElementById("result");
+
+      if (!startDate || !todayDate || !expiryDate || startDate >= expiryDate || todayDate > expiryDate) {
+        resultDiv.textContent = "Please ensure all dates are valid and logical.";
+        resultDiv.style.display = "block";
+        return;
+      }
+
+      const totalShelfLife = expiryDate - startDate; // Total shelf life in milliseconds
+      const remainingShelfLife = expiryDate - todayDate; // Remaining shelf life in milliseconds
+
+      // Calculate percentages and dates
+      const percentLeft = ((remainingShelfLife / totalShelfLife) * 100).toFixed(2);
+      const daysLeft = Math.ceil(remainingShelfLife / (1000 * 60 * 60 * 24));
+
+      const seventyFivePercentDate = new Date(
+        startDate.getTime() + (totalShelfLife * 0.75)
+      );
+
+      resultDiv.innerHTML = `
+        <p><strong>Percent Left:</strong> ${percentLeft}%</p>
+        <p><strong>Days Left:</strong> ${daysLeft} days</p>
+        <p><strong>Date at 75%:</strong> ${seventyFivePercentDate.toDateString()}</p>
+      `;
+      resultDiv.style.display = "block";
+    }
+
+    // Set default value for today's date
+    document.getElementById("todayDate").value = new Date().toISOString().split("T")[0];
+  </script>
+</body>
+</html>
